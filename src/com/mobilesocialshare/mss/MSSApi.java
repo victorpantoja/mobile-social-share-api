@@ -33,9 +33,10 @@ public class MSSApi {
 	
 	//public static final String server_name = "http://myalbumshare.com:8000/api";
 	private String server_name = "http://192.168.0.255:9080";
-	private static final String url_send_context = "/context";	
+	private static final String url_api_information = "/status";
 	private static final String url_login = "/login";
 	private static final String url_create_acount = "/login/create";
+	private static final String url_send_context = "/context";	
 	private static final String url_create_friendship = "/friendship/create";
 	private static final String url_get_friend = "/friendship/get.json";
 	private static final String url_remove_friendship = "/friendship/remove";
@@ -45,15 +46,15 @@ public class MSSApi {
 	private static final String url_send_email_envite = "/invite/email/send";
 	private static final String url_accept_email_envite = "/invite/email/accept";
 	private static final String url_get_user = "/user.json";
-	private static final String url_api_information = "/status";
 
 	public static final String MALE = "M";
 	public static final String FEMALE = "F";
 	public static final String OTHER = "O";
 
-	public static final Integer TWITTER_ID = 0;
+	public static final Integer TWITTER_ID = 1;
 	
 	public MSSApi(String server){
+		Log.d(TAG,"Servidor iniciado em: "+server);
 		this.server_name = server;
 	}
 
@@ -91,10 +92,37 @@ public class MSSApi {
 		}
 		return "";  
 	}
-	
-	public String tryAuthenticate (String login, String pass)
-	{
-		String url = url_login+"?username="+login+"&password="+pass;
+		
+	private static String convertStreamToString(InputStream is) {
+
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		StringBuilder sb = new StringBuilder();
+		String line = null;
+
+		try {
+			while ((line = reader.readLine()) != null) {
+				sb.append(line + "\n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return sb.toString();
+	}
+
+	public void Initiate() {
+		String url = url_api_information;
+		
+		String result = queryRESTurl(url);
+	}
+
+	public String Login(String username, String password) {
+		String url = url_login+"?username="+username+"&password="+password;
 		
 		String result = queryRESTurl(url);
 		
@@ -120,47 +148,57 @@ public class MSSApi {
 
 		return "";
 	}
+
+	public String CreateUser(String lastName, String firstName, String username, String gender) {
+		String url = url_create_acount+"?username="+username+"&firstName="+firstName+"&lastName="+lastName+"&gender="+gender;
 		
-	private static String convertStreamToString(InputStream is) {
-
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		StringBuilder sb = new StringBuilder();
-		String line = null;
-
-		try {
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return sb.toString();
+		return queryRESTurl(url);
 	}
 
-	public void Initiate() {
-		// TODO Auto-generated method stub
+	public String SendContext(Map<Integer, String> context, String auth) {
+		String url = url_send_context+"?location="+"teste"+"&text="+"qqcosa"+"&auth="+auth;
+
+		return queryRESTurl(url);
+	}
+	
+	public String GetUserInformation(String username, String auth){
+		String url = url_get_user+"?username="+username+"&auth="+auth;
 		
+		return queryRESTurl(url);
 	}
-
-	public String Login(String username, String password) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String CreateUser(String string, String string2, String username,
-			String male2) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void SendContext(Map<Integer, String> context) {
-		// TODO Auto-generated method stub
+	
+	public String AcceptInvite(String username, String auth){
+		String url = url_accept_invite+"?username="+username+"&auth="+auth;
 		
+		return queryRESTurl(url);
 	}
+	
+	public String SendInvite(String username, String auth){
+		String url = url_send_invite+"?username="+username+"&auth="+auth;
+		
+		return queryRESTurl(url);
+	}
+	
+	public String RemoveFriendShip(String username, String auth){
+		String url = url_remove_friendship+"?username="+username+"&auth="+auth;
+		
+		return queryRESTurl(url);
+	}
+	
+	public String GetFrind(String auth){
+		String url = url_get_friend+"?auth="+auth;
+		return queryRESTurl(url);
+	}
+	
+	public String GetInvitations(String auth){
+		String url = url_get_invitations+"?auth="+auth;
+		return queryRESTurl(url);
+	}
+	
+	public String SendEmailInvite(String email, String auth){
+		String url = url_send_email_envite+"?email="+email+"&auth="+auth;
+		
+		return queryRESTurl(url);
+	}
+	
 }
