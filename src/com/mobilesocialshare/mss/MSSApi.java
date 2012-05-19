@@ -53,6 +53,8 @@ public class MSSApi {
 	private static final String url_send_email_envite = "/invite/email/send";
 	private static final String url_accept_email_envite = "/invite/email/accept";
 	private static final String url_get_user = "/user.json";
+	private static final String url_maps_flter = "/filters/maps";
+	private static final String url_get_friends_suggestions = "/friendship/suggestions";
 
 	public static final String MALE = "M";
 	public static final String FEMALE = "F";
@@ -236,6 +238,12 @@ public class MSSApi {
 		return queryRESTurl(url);
 	}
 	
+	public String GetFriendsSuggestions(String auth){
+		String url = url_get_friends_suggestions+"?&auth="+auth;
+		
+		return queryRESTurl(url);
+	}
+	
 	public static String md5(String s) {
 	    try {
 	        // Create MD5 Hash
@@ -253,6 +261,13 @@ public class MSSApi {
 	        e.printStackTrace();
 	    }
 	    return "";
+	}
+	
+///filters/maps?origin=-23.0028,-43.3493&destination=-22.9989,-43.3600&filters=legs/end_address,legs/distance,legs/duration
+	public String MapsFilter(String origin, String destination, String filters, String auth){
+		String url = url_maps_flter+"?origin="+origin+"&destination="+destination+"&filters="+filters+"&auth="+auth;
+		
+		return queryRESTurl(url);
 	}
 	
 }
